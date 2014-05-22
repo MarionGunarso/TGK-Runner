@@ -5,28 +5,33 @@ public class PlayerScript : MonoBehaviour {
 
 	// Use this for initialization
 	public float jumpForce;
-	public float speed;
-	public bool  increasingSpeed;
-	public float speedMax;
-	public float speedIncrease;
-	public float startTimeIncrease;
-	public float intervalTimeIncrease;
+	public float speed; // default speed
+	public bool  increasingSpeed; // increase the speed or not
 
+	public float speedMax; // speed Maximum
+	public float speedIncrease; //amount of increasing speed
+	public float startTimeIncrease; //increase speed after?
+	public float intervalTimeIncrease; //increase speed every?
+
+	public float speedToDefaultPos; // speed char kembali ke posisi semula
 	[HideInInspector]
 	public bool jump = false; //condition to jump
 	public bool doubleJump = false; // condition to doublejump
-	public GameObject textGameOver;
+
 
 	private Transform groundCheck; // helper transform to check whether object is grounded
 
 	private bool grounded = false; //condition when grounded
 
-	[HideInInspector]
-	public bool gameOver = false;
+	private GameOverScript gameOverScript;
+
+	private Vector3 basePosition;
 
 	private float defaultSpeed;
 
 	void Start () {
+		basePosition = this.transform.position;
+		gameOverScript = GetComponent<GameOverScript>();
 		defaultSpeed = speed;
 		groundCheck = transform.Find("GroundCheck");
 		if(increasingSpeed==true)
@@ -54,6 +59,10 @@ public class PlayerScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		if(this.transform.position.x < basePosition.x)
+		{
+			transform.Translate(speedToDefaultPos,0,0);
+		}
 
 		//Debug.Log(grounded);
 		// The player is grounded if a linecast to the groundcheck position hits anything on the ground layer.
@@ -74,17 +83,12 @@ public class PlayerScript : MonoBehaviour {
 			a=0;
 		}
 
-		//if player outside camera, game over
-		if(this.transform.renderer.IsVisibleFrom(Camera.main)==false)
-		{
-			textGameOver.GetComponent<MeshRenderer>().enabled=true;
-			gameOver=true;
-		}
+
 		//restart the game
-		if(gameOver==true && Input.GetMouseButtonUp(0))
+		if(gameOverScript.gameOver==true && Input.GetMouseButtonUp(0))
 		{
 
-			gameOver=false;
+			gameOverScript.gameOver=false;
 			speed = defaultSpeed;
 			Application.LoadLevel("runner");
 		}

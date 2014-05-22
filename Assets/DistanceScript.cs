@@ -8,7 +8,7 @@ public class DistanceScript : MonoBehaviour
 	public int plusDistance;
 	public float intervalPlusDistance;
 
-	public PlayerScript playerScript;
+	public GameOverScript gameOverScript;
 
 	private TextMesh textMesh;
 	// Use this for initialization
@@ -21,7 +21,7 @@ public class DistanceScript : MonoBehaviour
 
 	void TambahDistance()
 	{
-		if(playerScript.gameOver==false)
+		if(gameOverScript.gameOver==false)
 		{
 			distance+=plusDistance;
 			textMesh.text = distance.ToString();

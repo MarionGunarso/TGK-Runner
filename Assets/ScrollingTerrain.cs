@@ -29,10 +29,11 @@ public class ScrollingTerrain : MonoBehaviour
 	/// </summary>
 	public bool isLooping = false;
 
-	public float diffIncrease;
+	//public float diffIncrease;
 
+	public bool noCliff = true;
 
-	public SpriteRenderer [] spriteRenderer;
+	private SpriteRenderer [] spriteRenderer;
 	//spawn terrain configuration
 	public float minSpawnX;
 	public float maxSpawnX;
@@ -62,7 +63,7 @@ public class ScrollingTerrain : MonoBehaviour
 	// 3 - Get all the children
 	void Start()
 	{
-		Debug.Log("start");
+		//Debug.Log("start");
 		//defaultSpeed = speed.x;
 		playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
 		// For infinite background only
@@ -100,8 +101,8 @@ public class ScrollingTerrain : MonoBehaviour
 			objectPart = objectPart.OrderBy(t => t.localScale.x).ToList();
 		}
 		positionY = backgroundPart.FirstOrDefault().position.y;
-		Debug.Log(backgroundPart.Count);
-		Debug.Log(objectPart.Count);
+		//Debug.Log(backgroundPart.Count);
+		//Debug.Log(objectPart.Count);
 	}
 	
 	void Update()
@@ -156,11 +157,20 @@ public class ScrollingTerrain : MonoBehaviour
 						int a = objectPart.Count;
 						int tes = Random.Range(0,a);
 
-						Transform newTerrain = objectPart.ElementAt(tes);
-						float randomX = Random.Range(minSpawnX,maxSpawnX);
-						float randomY = Random.Range(minSpawnY,maxspawnY);
+						float randomX;
+						float randomY;
 
-						newTerrain.position = new Vector3(lastPosition.x + lastSize.x + randomX, randomY, lastChild.position.z);
+						Transform newTerrain = objectPart.ElementAt(tes);
+						if(noCliff == false)
+						{
+							randomX = Random.Range(minSpawnX,maxSpawnX);
+							randomY = Random.Range(minSpawnY,maxspawnY);
+							newTerrain.position = new Vector3(lastPosition.x + lastSize.x + randomX, randomY, lastChild.position.z);
+						}
+						else
+						{
+							newTerrain.position = new Vector3(lastPosition.x + lastSize.x -0.1f, lastPosition.y, lastChild.position.z);
+						}
 						newTerrain.GetComponent<SpriteRenderer>().enabled = true;
 						newTerrain.GetComponent<BoxCollider2D>().enabled = true;
 						firstChild.GetComponent<SpriteRenderer>().enabled = false;
